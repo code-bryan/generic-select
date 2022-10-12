@@ -3,6 +3,7 @@ import PortalContainer from "./portal-container";
 import DropdownIcon from "./dropdown-icon";
 import OptionContainer from "./options-container";
 import EmptyList from "./empty-list";
+import Option from "./option";
 
 export {
   ContentRenderer,
@@ -10,4 +11,5 @@ export {
   DropdownIcon,
   OptionContainer,
   EmptyList,
+  Option,
 }

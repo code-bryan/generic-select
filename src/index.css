@@ -17,3 +17,7 @@
 .select-container .option-container .empty {
   @apply w-full flex items-center justify-center py-5 text-gray-700 text-xs leading-4;
 }
+
+.select-container .option-container .option {
+  @apply py-3 px-2 flex justify-between items-center cursor-pointer hover:bg-black/20;
+}

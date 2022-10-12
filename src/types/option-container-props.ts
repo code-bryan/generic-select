@@ -5,6 +5,6 @@ export interface OptionContainerProps<Option = OptionInterface> {
   options: Option[];
   open?: boolean;
   style?: CSSProperties;
-  OptionComponent?: (props: Partial<OptionProps>) => void;
+  OptionComponent?: (props: Partial<OptionProps>) => JSX.Element;
   EmptyListComponent?: (props?: any) => JSX.Element;
 }
