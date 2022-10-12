@@ -1,12 +1,8 @@
-import React from 'react';
-import { InjectableComponents, OptionInterface } from "./types";
+import React, { ChangeEvent, forwardRef, useImperativeHandle, useMemo, useRef, useState } from 'react';
+import { Configuration, InjectableComponents, OptionInterface, SelectRef } from "./types";
 import classNames from "classnames";
-import { ChangeEvent, forwardRef, useMemo, useRef, useState } from "react";
-import { ContentRenderer } from './components';
+import { ContentRenderer, DropdownIcon, PortalContainer } from './components';
 
-interface Configuration {
-  portal?: boolean;
-}
 interface Props {
   placeholder?: string;
   value?: string | number;
@@ -15,19 +11,13 @@ interface Props {
   components?: InjectableComponents<OptionInterface>
 }
 
-export interface BaseSelectRef<O = any> {
-  open: boolean;
-  text: string;
-  value?: O;
-  openDropdown: () => void;
-  clearInput: () => void;
-}
-
 export function useSelect(props: Props) {
+  const [open, setOpen] = useState(false);
   const [text, setText] = useState('');
   const [current, setCurrent] = useState<OptionInterface>();
 
-  const Content = useMemo(() => props.components?.ContentRenderComponent || ContentRenderer, []);
+  const Content = useMemo(() => props.components?.ContentRenderComponent || ContentRenderer, [props.components]);
+  const Icon = useMemo(() => props.components?.DropdownIconComponent || DropdownIcon, [props.components]);
 
   const containerClassNames = classNames(
     'select-container',
@@ -38,26 +28,44 @@ export function useSelect(props: Props) {
     setCurrent(undefined);
   }
 
+  const clearText = () => setText('');
+
+  const toogleOpen = () => setOpen(open => !open);
+  const openDropdown = () => setOpen(true);
+
   return {
     model: {
+      open,
       text,
       current,
       containerClassNames,
-      Content,
+      components: {
+        Content,
+        Icon
+      }
     },
     operations: {
       handleInputChange,
+      toogleOpen,
+      openDropdown,
+      clearText,
     },
   };
 }
 
-export default forwardRef<BaseSelectRef, Props>(function Select(props) {
+export default forwardRef<SelectRef, Props>(function Select(props, ref) {
   const container = useRef<HTMLDivElement>(null);
   const input = useRef<HTMLInputElement>(null);
 
-  const { model } = useSelect(props);
+  const { model, operations } = useSelect(props);
+  const { Content, Icon } = model.components;
 
-  const { Content } = model;
+  useImperativeHandle(ref, () => ({
+    ...model,
+    value: model.current,
+    openDropdown: () => operations.openDropdown(),
+    clearInput: () => operations.clearText(),
+  }));
 
   return (
     <div ref={container} className={model.containerClassNames}>
@@ -67,8 +75,19 @@ export default forwardRef<BaseSelectRef, Props>(function Select(props) {
           text={model.text}
           option={model.current}
           placeholder={props.placeholder}
+          onChange={operations.handleInputChange}
+          onClick={operations.toogleOpen}
+        />
+
+        <Icon 
+          open={model.open}
+          onClick={operations.toogleOpen}
         />
       </div>
+
+      <PortalContainer portal={props.config?.portal}>
+        
+      </PortalContainer>
     </div>
   );
 });

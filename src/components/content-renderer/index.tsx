@@ -1,6 +1,6 @@
 import React from 'react';
 import { forwardRef, useMemo } from "react";
-import { ContentRendererProps } from "../../types/content-renderer.interface";
+import { ContentRendererProps } from "../../types/content-renderer-props";
 import classNames from 'classnames';
 
 export function useContentRenderer(props: ContentRendererProps) {
