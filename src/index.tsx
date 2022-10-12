@@ -1,1 +1,5 @@
-export * from './select';
+import Select from './select';
+
+export {
+  Select,
+}

@@ -1,4 +1,19 @@
-import { forwardRef, useRef } from "react";
+import React from 'react';
+import { InjectableComponents, OptionInterface } from "./types";
+import classNames from "classnames";
+import { ChangeEvent, forwardRef, useMemo, useRef, useState } from "react";
+import { ContentRenderer } from './components';
+
+interface Configuration {
+  portal?: boolean;
+}
+interface Props {
+  placeholder?: string;
+  value?: string | number;
+  className?: string;
+  config?: Configuration;
+  components?: InjectableComponents<OptionInterface>
+}
 
 export interface BaseSelectRef<O = any> {
   open: boolean;
@@ -8,25 +23,52 @@ export interface BaseSelectRef<O = any> {
   clearInput: () => void;
 }
 
-export function useSelect() {
+export function useSelect(props: Props) {
+  const [text, setText] = useState('');
+  const [current, setCurrent] = useState<OptionInterface>();
+
+  const Content = useMemo(() => props.components?.ContentRenderComponent || ContentRenderer, []);
+
+  const containerClassNames = classNames(
+    'select-container',
+  );
+
+  const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setText(event.target.value);
+    setCurrent(undefined);
+  }
+
   return {
-    model: {},
-    operations: {},
+    model: {
+      text,
+      current,
+      containerClassNames,
+      Content,
+    },
+    operations: {
+      handleInputChange,
+    },
   };
 }
 
-const Select = forwardRef<BaseSelectRef>(() => {
-  const divRef = useRef<HTMLDivElement>(null);
+export default forwardRef<BaseSelectRef, Props>(function Select(props) {
+  const container = useRef<HTMLDivElement>(null);
+  const input = useRef<HTMLInputElement>(null);
 
-  const {} = useSelect();
+  const { model } = useSelect(props);
+
+  const { Content } = model;
 
   return (
-    <div ref={divRef}>
-      <div>
-        
+    <div ref={container} className={model.containerClassNames}>
+      <div className="select">
+        <Content 
+          ref={input}
+          text={model.text}
+          option={model.current}
+          placeholder={props.placeholder}
+        />
       </div>
     </div>
   );
 });
-
-export default Select;

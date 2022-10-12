@@ -7,5 +7,5 @@
 }
 
 .select-container .select {
-  @apply px-2 text-base leading-5 outline-none rounded-lg w-full border;
+  @apply px-2 text-base leading-5 outline-none rounded-lg w-full border bg-white flex items-center cursor-pointer shadow-md;
 }
