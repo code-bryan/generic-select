@@ -2,9 +2,9 @@ import React, { ChangeEvent, CSSProperties, forwardRef, useEffect, useImperative
 import { Configuration, InjectableComponents, OptionInterface, SelectRef } from "./types";
 import classNames from "classnames";
 import { ContentRenderer, DropdownIcon, EmptyList, OptionContainer, PortalContainer, Option } from './components';
-import useClickOutside from './hooks/use-click-outside';
+import { useClickOutside } from './hooks';
 
-interface Props<Option = OptionInterface> {
+export interface SelectProps<Option = OptionInterface> {
   placeholder?: string;
   value?: string | number;
   className?: string;
@@ -16,7 +16,7 @@ interface Props<Option = OptionInterface> {
   onTextChange?: (text: string) => void;
 }
 
-const positionContainerInElement = (rect: DOMRect): CSSProperties => {
+export const positionContainerInElement = (rect: DOMRect): CSSProperties => {
   const { top, right, left, width } = rect;
   return {
     top: top + 46,
@@ -27,7 +27,7 @@ const positionContainerInElement = (rect: DOMRect): CSSProperties => {
   }; 
 }
 
-export function useSelect(props: Props, outside?: boolean) {
+export function useSelect(props: SelectProps, outside?: boolean) {
   const { options = [], value = '', components } = props;
 
   const [open, setOpen] = useState(false);
@@ -128,7 +128,7 @@ export function useSelect(props: Props, outside?: boolean) {
   };
 }
 
-export default forwardRef<SelectRef, Props>(function Select(props, ref) {
+export default forwardRef<SelectRef, SelectProps>(function Select(props, ref) {
   const container = useRef<HTMLDivElement>(null);
   const input = useRef<HTMLInputElement>(null);
 
