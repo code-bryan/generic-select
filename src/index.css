@@ -1,0 +1,11 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.select-container {
+  @apply relative text-black;
+}
+
+.select-container .select {
+  @apply px-2 text-base leading-5 outline-none rounded-lg w-full border;
+}
