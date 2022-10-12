@@ -9,3 +9,11 @@
 .select-container .select {
   @apply px-2 text-base leading-5 outline-none rounded-lg w-full border bg-white flex items-center cursor-pointer shadow-md;
 }
+
+.select-container .option-container {
+  @apply bg-white shadow-md border rounded-lg flex-col fixed z-50 max-h-[235px] overflow-auto;
+}
+
+.select-container .option-container .empty {
+  @apply w-full flex items-center justify-center py-5 text-gray-700 text-xs leading-4;
+}

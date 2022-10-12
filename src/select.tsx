@@ -1,7 +1,7 @@
-import React, { ChangeEvent, forwardRef, useImperativeHandle, useMemo, useRef, useState } from 'react';
+import React, { ChangeEvent, CSSProperties, forwardRef, useImperativeHandle, useMemo, useRef, useState } from 'react';
 import { Configuration, InjectableComponents, OptionInterface, SelectRef } from "./types";
 import classNames from "classnames";
-import { ContentRenderer, DropdownIcon, PortalContainer } from './components';
+import { ContentRenderer, DropdownIcon, EmptyList, OptionContainer, PortalContainer } from './components';
 
 interface Props {
   placeholder?: string;
@@ -11,6 +11,17 @@ interface Props {
   components?: InjectableComponents<OptionInterface>
 }
 
+const positionContainerInElement = (rect: DOMRect): CSSProperties => {
+  const { top, right, left, width } = rect;
+  return {
+    top: top + 46,
+    right,
+    left,
+    width,
+    zIndex: 9999999999
+  }; 
+}
+
 export function useSelect(props: Props) {
   const [open, setOpen] = useState(false);
   const [text, setText] = useState('');
@@ -18,6 +29,8 @@ export function useSelect(props: Props) {
 
   const Content = useMemo(() => props.components?.ContentRenderComponent || ContentRenderer, [props.components]);
   const Icon = useMemo(() => props.components?.DropdownIconComponent || DropdownIcon, [props.components]);
+  const Container = useMemo(() => props.components?.OptionsContainerComponent || OptionContainer, [props.components]);
+  const EmptyListComponent = useMemo(() => props.components?.EmptyListComponent || EmptyList, [props.components]);
 
   const containerClassNames = classNames(
     'select-container',
@@ -41,7 +54,9 @@ export function useSelect(props: Props) {
       containerClassNames,
       components: {
         Content,
-        Icon
+        Icon,
+        Container,
+        EmptyListComponent
       }
     },
     operations: {
@@ -58,7 +73,15 @@ export default forwardRef<SelectRef, Props>(function Select(props, ref) {
   const input = useRef<HTMLInputElement>(null);
 
   const { model, operations } = useSelect(props);
-  const { Content, Icon } = model.components;
+  const { Content, Icon, Container, EmptyListComponent } = model.components;
+
+  const optionContainerStyles = useMemo((): CSSProperties => {
+    if (props.config?.portal && container.current) {
+      return positionContainerInElement(container.current.getBoundingClientRect());
+    }
+
+    return { position: 'absolute', width: '100%' };
+  }, [container.current, props.config]);
 
   useImperativeHandle(ref, () => ({
     ...model,
@@ -86,7 +109,12 @@ export default forwardRef<SelectRef, Props>(function Select(props, ref) {
       </div>
 
       <PortalContainer portal={props.config?.portal}>
-        
+        <Container 
+          open={model.open}
+          options={[]}
+          style={optionContainerStyles}
+          EmptyListComponent={() => <EmptyListComponent />}
+        />
       </PortalContainer>
     </div>
   );
