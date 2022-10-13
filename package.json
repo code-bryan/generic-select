@@ -1,6 +1,6 @@
 {
   "name": "@bryancode/react-select",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "A customizable modular select built for React JS",
   "homepage": "https://github.com/code-bryan/react-selector",
   "main": "dist/index.js",

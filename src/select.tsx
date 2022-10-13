@@ -8,6 +8,7 @@ export interface SelectProps<Option = OptionInterface> {
   placeholder?: string;
   value?: string | number;
   className?: string;
+  selectClassName?: string;
   options?: Option[];
   config?: Configuration;
   components?: InjectableComponents<OptionInterface>;
@@ -54,6 +55,12 @@ export function useSelect(props: SelectProps, outside?: boolean) {
 
   const containerClassNames = classNames(
     'select-container',
+    props.className,
+  );
+
+  const selectClassNames = classNames(
+    'select',
+    props.selectClassName,
   );
 
   const handleOptionSelected = (option: OptionInterface) => {
@@ -109,6 +116,7 @@ export function useSelect(props: SelectProps, outside?: boolean) {
       text,
       current,
       containerClassNames,
+      selectClassNames,
       filteredOptions,
       components: {
         Content,
@@ -153,7 +161,7 @@ export default forwardRef<SelectRef, SelectProps>(function Select(props, ref) {
 
   return (
     <div ref={container} className={model.containerClassNames}>
-      <div className="select">
+      <div className={model.selectClassNames}>
         <Content 
           ref={input}
           text={model.text}
