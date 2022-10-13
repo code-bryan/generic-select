@@ -1,11 +1,22 @@
 {
-  "name": "generic-select",
-  "version": "1.0.0",
-  "description": "A customizable generic select built for React JS",
-  "main": "index.js",
+  "name": "@bryancode/react-select",
+  "version": "0.0.2",
+  "description": "A customizable modular select built for React JS",
+  "homepage": "https://github.com/code-bryan/react-selector",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
   "scripts": {
+    "build": "rm -rf dist && tsdx build",
     "build:dev": "tsdx watch",
-    "build:tailwind": "tailwindcss -i ./src/index.css -o ./dist/index.css --minify"
+    "build:tailwind": "tailwindcss -i ./src/index.css -o ./dist/index.css --minify",
+    "prepare": "yarn build && yarn build:tailwind"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/code-bryan/react-selector"
   },
   "keywords": [
     "ReactJS",
@@ -14,7 +25,7 @@
     "Select",
     "Dropdown"
   ],
-  "author": "Bryan Astacio",
+  "author": "Bryan Astacio <brya0196@gmail.com>",
   "license": "MIT",
   "dependencies": {
     "classnames": "^2.3.2",
